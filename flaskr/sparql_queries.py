@@ -2,14 +2,6 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 from textwrap import dedent
 
 
-def float_to_str(coord):
-    res = str(coord)
-    missing = 10 - len(res)
-    while missing > 0:
-        res += '0'
-        missing -= 1
-    return res
-
 # TODO: Move those prefix in a SQLite database
 def get_prefixes():
     return dedent("""
@@ -71,6 +63,7 @@ def get_all_coordinates(dataset,
         results.append(dict_row)
     return results
 
+
 def get_all_stations():
     query = build_query("""
     SELECT ?name
@@ -85,6 +78,7 @@ def get_all_stations():
         name = row['name']['value']
         results.append(name)
     return results
+
 
 def get_all_routes():
     query = build_query("""
@@ -119,40 +113,41 @@ def get_all_routes():
         results.append({'route': route, 'lat': lat, 'long': long, 'routeLongName': routeLongName, 'stopTime': stopTime})
     return results
 
+
 def get_route_dep_arr(dep_lat, dep_long, arr_lat, arr_long):
-    query = build_query("""
+    query = build_query(f"""
     SELECT DISTINCT ?route ?routeLongName ?stopTime ?aTime ?dTime ?stopTime1 ?aTime1 ?dTime1 WHERE {
     ?route a gtfs:Route .
     OPTIONAL { ?route gtfs:longName ?routeLongName . }
 
-    ?trip a gtfs:Trip .  
+    ?trip a gtfs:Trip .
     ?trip gtfs:route ?route .
-  
-    ?stopTime a gtfs:StopTime . 
-    ?stopTime gtfs:trip ?trip . 
-    ?stopTime gtfs:stop ?stop . 
 
-   	?stopTime gtfs:arrivalTime ?aTime .
-  	?stopTime gtfs:arrivalTime ?dTime .
-  
-    ?stop a gtfs:Stop . 
-    ?stop geo:lat "%s" .
-    ?stop geo:long "%s" .
-  
-  ?stop1Time1 a gtfs:StopTime . 
-    ?stop1Time1 gtfs:trip ?trip . 
-    ?stop1Time1 gtfs:stop ?stop1 . 
+    ?stopTime a gtfs:StopTime .
+    ?stopTime gtfs:trip ?trip .
+    ?stopTime gtfs:stop ?stop .
 
-   	?stop1Time1 gtfs:arrivalTime ?aTime1 .
-  	?stop1Time1 gtfs:arrivalTime ?dTime1 .
-  
-    ?stop1 a gtfs:Stop . 
-    ?stop1 geo:lat "%s" .
-    ?stop1 geo:long "%s" .
-    
-    } GROUP BY ?route ?routeLongName ?stopTime  ?aTime ?dTime ?stopTime1  ?aTime1 ?dTime1
+    ?stopTime gtfs:arrivalTime ?aTime .
+    ?stopTime gtfs:arrivalTime ?dTime .
+
+    ?stop a gtfs:Stop .
+    ?stop geo:lat {format(dep_lat, '.10f')} .
+    ?stop geo:long {format(dep_long, '.10f')} .
+
+    ?stop1Time1 a gtfs:StopTime .
+    ?stop1Time1 gtfs:trip ?trip .
+    ?stop1Time1 gtfs:stop ?stop1 .
+
+    ?stop1Time1 gtfs:arrivalTime ?aTime1 .
+    ?stop1Time1 gtfs:arrivalTime ?dTime1 .
+
+    ?stop1 a gtfs:Stop .
+    ?stop1 geo:lat {format(arr_lat, '.10f')} .
+    ?stop1 geo:long {format(arr_long, '.10f')} .
+
+    } ?route ?routeLongName ?stopTime ?aTime ?dTime ?stopTime1  ?aTime1 ?dTime1
     ORDER BY ?dTime
-    """%(float_to_str(dep_lat), float_to_str(dep_long), float_to_str(arr_lat), float_to_str(arr_long)))
+    """
     query_results = query_fuseki(query, 'gtfs_sncf')['results']['bindings']
     results = []
     for row in query_results:
@@ -169,8 +164,8 @@ def get_stations_around_coord(lat, long, name):
     max_long = long + 0.05
     min_lat = lat - 0.05
     min_long = long - 0.05
-    lat, long = float_to_str(lat), float_to_str(long)
-    min_lat, min_long, max_lat, max_long = float_to_str(min_lat), float_to_str(min_long), float_to_str(max_lat), float_to_str(max_long)    
+    lat, long = format(lat, '.10f'), format(long, '.10f')
+    min_lat, min_long, max_lat, max_long = format(min_lat, '.10f'), format(min_long, '.10f'), format(max_lat, '.10f'), format(max_long, '.10f')
     query = build_query("""SELECT * WHERE {
         ?stop a gtfs:Stop .
         ?stop foaf:name ?name .
@@ -194,7 +189,7 @@ def get_departures_around(lat, long, limit = 10):
     max_long = long + 0.05
     min_lat = lat - 0.05
     min_long = long - 0.05
-    min_lat, min_long, max_lat, max_long = float_to_str(min_lat), float_to_str(min_long), float_to_str(max_lat), float_to_str(max_long)
+    min_lat, min_long, max_lat, max_long = format(min_lat, '.10f'), format(min_long, '.10f'), format(max_lat, '.10f'), format(max_long, '.10f')
     query = build_query("""
     SELECT DISTINCT ?routeLongName ?dTime ?name ?lat ?long  WHERE {
     ?route a gtfs:Route .
@@ -239,14 +234,3 @@ def get_departures_around(lat, long, limit = 10):
         dtime = row['dTime']['value']
         results.append({'routeLongName': routeLongName, 'lat': lat, 'long': long, 'name': name, 'dTime': dtime})
     return results
-
-
-
-
-def float_to_str(coord):
-    res = str(coord)
-    missing = 10 - len(res)
-    while missing > 0:
-        res += '0'
-        missing -= 1
-    return res

@@ -64,7 +64,7 @@ def data():
                         dtimes.append(t['dTime'])
                         tmp_dict = {'routeLongName': t['routeLongName'].replace('_', ' '), 'dTime': t['dTime'], 'aTime': t['aTime']}                   
                         tp.append(tmp_dict)
-                return render_template('itinerary/substitute.html', map=map._repr_html_(), origin=dStation, destination = aStation, trips = tp)
+                return render_template('itinerary/substitute.html', map=map._repr_html_(), origin=dStation, destination=aStation, trips = tp)
             except:
                 return render_template('itinerary/no-result.html')
 
@@ -73,7 +73,7 @@ def data():
 def search():
     term = request.form['q']
     stations = get_all_stations()
-    stations = [s.replace('_' , ' ') for s in stations]
+    stations = [s.replace('_', ' ') for s in stations]
     filtered_dict = [v for v in stations if term in v]
     resp = jsonify(filtered_dict)
     resp.status_code = 200
