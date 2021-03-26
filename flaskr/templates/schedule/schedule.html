@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+{{ super() }}
+{{ wtf.quick_form(form, form_type='inline')}}
+{% for trip in trips %}
+<div class = "container">
+    <table class="table" style="margin-left:auto;margin-right:auto;">
+        <thead>
+          <tr>
+            <th scope="col" class="col-md-6">Departure Station</th>
+            <th scope="col" class="col-md-6">Journey Name</th>
+            <th scope="col" class="col-md-2">Departure Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row" class="col-md-2">{{trip.dStation}}</th>
+            <th scope="row" class="col-md-6">{{trip.routeLongName}}</th>
+            <td class="col-md-2">{{trip.dTime}}</td>
+          </tr>
+        </tbody>
+      </table>
+</div>
+{% endfor %}
+{{map|safe}}
+{% endblock %}

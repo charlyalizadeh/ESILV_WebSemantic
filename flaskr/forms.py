@@ -7,3 +7,9 @@ class SearchMapForm(FlaskForm):
     radius = IntegerField('Radius', description='Radius', render_kw={'placeholder': 'Radius'})
     datasets = SelectMultipleField('Datasets', description='Datasets', choices=[('gtfs_sncf', 'gtfs_sncf'), ('gtfs_saintetiennebustram', 'gtfs_saintetiennebustram')])
     submit = SubmitField("Search")
+
+class SearchDeparturesForm(FlaskForm):
+    address = StringField('Address', description='Adress', render_kw={'placeholder': 'Adress'})
+    #radius = IntegerField('Radius', description='Radius', render_kw={'placeholder': 'Radius'})
+    limit = IntegerField('Number of departures', description='Number of Departures', render_kw={'placeholder': 'Limit'})
+    submit = SubmitField("Search")

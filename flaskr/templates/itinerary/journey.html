@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+	<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" crossorigin="anonymous"></script>
+  </head>
+  <body data-new-gr-c-s-check-loaded="14.1000.0" data-gr-ext-installed="">
+    
+    
+
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="http://127.0.0.1:5000/">Home</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="http://127.0.0.1:5000/map/sncf-stops/48.864902612482986/2.3429293408796634/10000">Map</a></li>
+      </ul>
+      <ul class="nav navbar-nav">
+        <li><a href="http://127.0.0.1:5000/">Planning trip</a></li>
+      </ul>
+      <ul class="nav navbar-nav">
+        <li><a href="http://127.0.0.1:5000/schedule/schedule/48.864902612482986/2.3429293408796634/10">Train schedules</a></li>
+      </ul>
+	  <ul class="nav navbar-nav">
+        <li><a href="http://127.0.0.1:5000/itinerary">Search journey</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="https://github.com/charlyalizadeh/ESILV_WebSemantic">Github Repos of the project</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+	<div style="width: 600px; margin: auto;">
+		<h2>Itineraries Search</h2>
+		<form action="/itinerary/result" method="POST">
+			<label for="dStation">Departure Station: </label>
+			&nbsp;&nbsp;<input type="text" name="dStation" id="searchBoxDeparture"><br><br>
+			<label for="aStation">Arrival Station: </label>
+			&nbsp;&nbsp;<input type="text" name="aStation" id="searchBoxArrival"><br><br>
+			<input type="submit" value="Search Journeys">
+		  </form> 
+		  
+	</div>
+
+	<script>
+		$(function() {
+			$("#searchBoxDeparture").autocomplete({
+				source : function(request, response) {
+					$.ajax({
+						type: "POST",
+						url : "http://127.0.0.1:5000/itinerary/search",
+						dataType : "json",
+						cache: false,
+						data : {
+							q : request.term
+						},
+						success : function(data) {
+							//alert(data);
+							//console.log(data);
+							response(data);
+						},
+						error: function(jqXHR, textStatus, errorThrown) {
+							console.log(textStatus + " " + errorThrown);
+						}
+					});
+				},
+				minLength : 2
+			});
+		});
+
+        $(function() {
+			$("#searchBoxArrival").autocomplete({
+				source : function(request, response) {
+					$.ajax({
+						type: "POST",
+						url : "http://127.0.0.1:5000/itinerary/search",
+						dataType : "json",
+						cache: false,
+						data : {
+							q : request.term
+						},
+						success : function(data) {
+							//alert(data);
+							//console.log(data);
+							response(data);
+						},
+						error: function(jqXHR, textStatus, errorThrown) {
+							console.log(textStatus + " " + errorThrown);
+						}
+					});
+				},
+				minLength : 2
+			});
+		});
+	</script>
+</body>
+</html>
