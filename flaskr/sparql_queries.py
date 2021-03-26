@@ -2,6 +2,7 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 from textwrap import dedent
 
 
+# TODO: Move those prefix in a SQLite database
 def get_prefixes():
     return dedent("""
     PREFIX gtfs: <http://vocab.gtfs.org/terms#>
@@ -23,29 +24,41 @@ def build_query(string):
     return get_prefixes() + dedent(string)
 
 
-def query_fuseki(query):
-    sparql = SPARQLWrapper('http://localhost:3030/gtfs/sparql')
+def query_fuseki(query, dataset):
+    sparql = SPARQLWrapper(f'http://localhost:3030/{dataset}')
+    print(query)
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     results = sparql.query().convert()
     return results
 
 
-def get_all_coordinates():
-    query = build_query("""
-    SELECT ?name ?lat ?long
-    WHERE {
-        ?id foaf:name ?name .
+def get_all_coordinates(dataset,
+                        rdf_class='gtfs:Stop',
+                        predicates={'foaf:name': '?name'},
+                        optionals={'dct:description': '?description'},
+                        types={'lat': float, 'long': float}):
+    query = f"""
+    SELECT DISTINCT *
+    WHERE {{
+        ?id a {rdf_class} .
         ?id geo:long ?long .
         ?id geo:lat ?lat .
-    }
-    GROUP BY ?name ?lat ?long
-    """)
-    query_results = query_fuseki(query)['results']['bindings']
+    """
+    for (pred, subj) in predicates.items():
+        query += f'?id {pred} {subj} .\n'
+    for (pred, subj) in optionals.items():
+        query += f'OPTIONAL {{ ?id {pred} {subj} . }}\n'
+    query += '}'
+    query = build_query(query)
+    query_results = query_fuseki(query, dataset)['results']['bindings']
     results = []
     for row in query_results:
-        name = row['name']['value']
-        lat = float(row['lat']['value'])
-        long = float(row['long']['value'])
-        results.append({'name': name, 'lat': lat, 'long': long})
+        dict_row = {}
+        for (key, val) in row.items():
+            val = val['value']
+            if key in types.keys():
+                val = types[key](val)
+            dict_row[key] = val
+        results.append(dict_row)
     return results

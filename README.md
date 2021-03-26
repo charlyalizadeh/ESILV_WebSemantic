@@ -55,16 +55,17 @@ Now go on [http://localhost:3030](http://localhost:3030) and you should be able 
 
 ### Import the data
 
-1. Unzip `gtfsintriples.zip`
+1. Unzip `data.zip`
 ```bash
-$ unzip gtfsintriples.zip
+$ unzip data.zip
 ```
-2. Create the `gtfs` database
+2. Create the `gtfs_sncf` and `gtfs_saintetiennebustram` datasets
 ![add dataset](doc/adddataset.png)
-3. Upload `gtfsintriples.ttl` to the database (it can take a while):
+3. Upload `data.ttl` to the database (it can take a while):
 ![upload dataset](doc/uploaddata.png)
 
 The fuseki triplestore is now configured to work with the flask application
+
 
 # Run the app
 
