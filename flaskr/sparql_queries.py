@@ -83,20 +83,20 @@ def get_all_stations():
 def get_all_routes():
     query = build_query("""
     SELECT DISTINCT ?route ?routeLongName ?lat ?long ?stopTime WHERE {
-	?route a gtfs:Route .
-  	OPTIONAL { ?route gtfs:shortName ?routeShortName . }
-	OPTIONAL { ?route gtfs:longName ?routeLongName . }
-  
-  	?trip a gtfs:Trip .  
-	?trip gtfs:service ?service .
-	?trip gtfs:route ?route .
-  	?stopTime a gtfs:StopTime . 
-	?stopTime gtfs:trip ?trip . 
-	?stopTime gtfs:stop ?stop . 
-	
-	?stop a gtfs:Stop . 
-	?stop geo:lat ?lat .
-   	?stop geo:long ?long .
+    ?route a gtfs:Route .
+    OPTIONAL { ?route gtfs:shortName ?routeShortName . }
+    OPTIONAL { ?route gtfs:longName ?routeLongName . }
+    
+    ?trip a gtfs:Trip .  
+    ?trip gtfs:service ?service .
+    ?trip gtfs:route ?route .
+    ?stopTime a gtfs:StopTime . 
+    ?stopTime gtfs:trip ?trip . 
+    ?stopTime gtfs:stop ?stop . 
+    
+    ?stop a gtfs:Stop . 
+    ?stop geo:lat ?lat .
+    ?stop geo:long ?long .
     } GROUP BY ?route ?routeLongName ?lat ?long ?stopTime
     """)
     query_results = query_fuseki(query, 'gtfs_sncf')['results']['bindings']
@@ -116,9 +116,9 @@ def get_all_routes():
 
 def get_route_dep_arr(dep_lat, dep_long, arr_lat, arr_long):
     query = build_query(f"""
-    SELECT DISTINCT ?route ?routeLongName ?stopTime ?aTime ?dTime ?stopTime1 ?aTime1 ?dTime1 WHERE {
+    SELECT DISTINCT ?route ?routeLongName ?stopTime ?aTime ?dTime ?stopTime1 ?aTime1 ?dTime1 WHERE {{
     ?route a gtfs:Route .
-    OPTIONAL { ?route gtfs:longName ?routeLongName . }
+    OPTIONAL {{ ?route gtfs:longName ?routeLongName . }}
 
     ?trip a gtfs:Trip .
     ?trip gtfs:route ?route .
@@ -144,10 +144,9 @@ def get_route_dep_arr(dep_lat, dep_long, arr_lat, arr_long):
     ?stop1 a gtfs:Stop .
     ?stop1 geo:lat {format(arr_lat, '.10f')} .
     ?stop1 geo:long {format(arr_long, '.10f')} .
-
-    } ?route ?routeLongName ?stopTime ?aTime ?dTime ?stopTime1  ?aTime1 ?dTime1
+    }} GROUP BY ?route ?routeLongName ?stopTime ?aTime ?dTime ?stopTime1 ?aTime1 ?dTimec
     ORDER BY ?dTime
-    """
+    """)
     query_results = query_fuseki(query, 'gtfs_sncf')['results']['bindings']
     results = []
     for row in query_results:
@@ -219,7 +218,6 @@ def get_departures_around(lat, long, limit = 10):
   
     ?stop1 a gtfs:Stop . 
     ?stop1 foaf:name ?name1 .
-  
   FILTER( ?lat >='%s' && ?lat <= '%s' && ?long >= '%s' && ?long<= '%s') .
     } GROUP BY ?routeLongName ?dTime ?name ?lat ?long
     ORDER BY ?dTime

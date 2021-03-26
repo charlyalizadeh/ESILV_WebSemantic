@@ -27,7 +27,7 @@ def schedule(lat, long, limit, radius = 10000):
         #print(point)
         if point is not None:
             #radius = form.radius.data
-            coordinates = get_all_coordinates()
+            coordinates = get_all_coordinates('gtfs_sncf')
             coordinates = [c for c in coordinates if get_distance((c['lat'], c['long']), (point[0], point[1])) < radius]
             map = folium.Map(location=point)
             if coordinates:
