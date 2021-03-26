@@ -1,7 +1,14 @@
 from SPARQLWrapper import SPARQLWrapper, JSON
 from textwrap import dedent
-from .utils import float_to_str
 
+
+def float_to_str(coord):
+    res = str(coord)
+    missing = 10 - len(res)
+    while missing > 0:
+        res += '0'
+        missing -= 1
+    return res
 
 # TODO: Move those prefix in a SQLite database
 def get_prefixes():
@@ -72,7 +79,7 @@ def get_all_stations():
     }
     GROUP BY ?name
     """)
-    query_results = query_fuseki(query)['results']['bindings']
+    query_results = query_fuseki(query, 'gtfs_sncf')['results']['bindings']
     results = []
     for row in query_results:
         name = row['name']['value']
@@ -98,7 +105,7 @@ def get_all_routes():
    	?stop geo:long ?long .
     } GROUP BY ?route ?routeLongName ?lat ?long ?stopTime
     """)
-    query_results = query_fuseki(query)['results']['bindings']
+    query_results = query_fuseki(query, 'gtfs_sncf')['results']['bindings']
     results = []
     #print(query_results)
     for row in query_results:
@@ -146,7 +153,7 @@ def get_route_dep_arr(dep_lat, dep_long, arr_lat, arr_long):
     } GROUP BY ?route ?routeLongName ?stopTime  ?aTime ?dTime ?stopTime1  ?aTime1 ?dTime1
     ORDER BY ?dTime
     """%(float_to_str(dep_lat), float_to_str(dep_long), float_to_str(arr_lat), float_to_str(arr_long)))
-    query_results = query_fuseki(query)['results']['bindings']
+    query_results = query_fuseki(query, 'gtfs_sncf')['results']['bindings']
     results = []
     for row in query_results:
         route = row['route']['value']
@@ -172,7 +179,7 @@ def get_stations_around_coord(lat, long, name):
         FILTER (?lat >= '%s' && ?lat <= '%s' && ?long >= '%s' && ?long <='%s' && ?lat != '%s' && ?long != '%s') .		
     }"""%(min_lat, max_lat, min_long, max_long, lat, long)
     )
-    query_results = query_fuseki(query)['results']['bindings']
+    query_results = query_fuseki(query, 'gtfs_sncf')['results']['bindings']
     results = [{'lat': lat, 'long': long, 'name': name}]
     for row in query_results:
         name = row['name']['value']
@@ -222,7 +229,7 @@ def get_departures_around(lat, long, limit = 10):
     } GROUP BY ?routeLongName ?dTime ?name ?lat ?long
     ORDER BY ?dTime
 	LIMIT %s""")%(min_lat, max_lat, min_long, max_long, str(limit))
-    query_results = query_fuseki(query)['results']['bindings']
+    query_results = query_fuseki(query, 'gtfs_sncf')['results']['bindings']
     results = []
     for row in query_results:
         name = row['name']['value']
@@ -232,3 +239,14 @@ def get_departures_around(lat, long, limit = 10):
         dtime = row['dTime']['value']
         results.append({'routeLongName': routeLongName, 'lat': lat, 'long': long, 'name': name, 'dTime': dtime})
     return results
+
+
+
+
+def float_to_str(coord):
+    res = str(coord)
+    missing = 10 - len(res)
+    while missing > 0:
+        res += '0'
+        missing -= 1
+    return res

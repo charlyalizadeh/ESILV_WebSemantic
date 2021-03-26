@@ -5,7 +5,7 @@ from flask import (
 )
 import folium
 from folium.plugins import MarkerCluster
-from .sparql_queries import get_all_coordinates
+#from .sparql_queries import get_all_coordinates
 from .utils import get_distance, get_bounds, find_point, construct_map
 from .forms import SearchMapForm
 bp = Blueprint('map', __name__, url_prefix='/map')

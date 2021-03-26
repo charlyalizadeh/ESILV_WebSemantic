@@ -2,4 +2,129 @@
 
 {% block content %}
 {{ super() }}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css">
+<link rel="stylesheet" type="text/css" href="testing.css">
+<link rel="stylesheet" type="text/css" href="css/all.css">
+<meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
+<style>
+    body,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: "Lato", sans-serif
+    }
+
+    .w3-bar,
+    h1,
+    button {
+        font-family: "Montserrat", sans-serif
+    }
+
+    .fa-anchor,
+    .fa-coffee {
+        font-size: 200px
+    }
+</style>
+
+<body>
+
+
+    <header class="w3-container w3-black w3-center" style="padding:128px 16px">
+        <h1 class="w3-margin w3-jumbo">Welcome to our application !</h1>
+        <p class="w3-xlarge">Here are the features available on our application. Please feel free to go through each of
+            them.</p>
+        <button class="w3-button w3-white w3-padding-large w3-large w3-margin-top"
+            onclick="window.open('../map/sncf-stops/48.864902612482986/2.3429293408796634/10000', '_self')">Map</button>
+        <button class=" w3-button w3-white w3-padding-large w3-large w3-margin-top">Planning
+            Trip</button>
+        <button class="w3-button w3-white w3-padding-large w3-large w3-margin-top"
+            onclick="window.open('../schedule/schedule/48.864902612482986/2.3429293408796634/10', '_self')">Train
+            Schedules</button>
+        <button class="w3-button w3-white w3-padding-large w3-large w3-margin-top"
+            onclick="window.open('../itinerary/', '_self')">Search
+            Journey</button>
+    </header>
+
+    <!-- First Grid -->
+    <div class="w3-row-padding w3-padding-64 w3-container">
+        <div class="w3-content">
+            <div class="w3-twothird">
+                <h1>Map</h1>
+                <h5 class="w3-padding-32">First tab allows user to enter an address and a radius. From the input, our
+                    app will find the address and print all the train stations in the area given.</h5>
+
+                <p class="w3-text-grey"> Our app will find the address' latitude and longitude using Folium and Geopy
+                    Python libraries. From this, we will build a map with pins on the closest train stations in the
+                    radius given. On each pin is printed the name of the train station.</p>
+            </div>
+
+            <div class="w3-third w3-center">
+                <i class="fa fa-map w3-padding-64 w3-text-black" style="font-size:128px;"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second Grid -->
+    <div class="w3-row-padding w3-light-grey w3-padding-64 w3-container">
+        <div class="w3-content">
+            <div class="w3-third w3-center">
+                <i class="fa fa-location-arrow w3-padding-64 w3-text-black w3-margin-right"
+                    style="font-size:128px;"></i>
+            </div>
+
+            <div class="w3-twothird">
+                <h1>Planning Trip</h1>
+                <h5 class="w3-padding-32">Lorem ipsum .</h5>
+
+                <p class="w3-text-grey">Lorem ipsum .</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Third Grid -->
+    <div class="w3-row-padding w3-padding-64 w3-container">
+        <div class="w3-content">
+            <div class="w3-twothird">
+                <h1>Train Schedules</h1>
+                <h5 class="w3-padding-32">Third tab aims to print all the upcoming trains in area defined by the user.
+                </h5>
+
+                <p class="w3-text-grey">Given an address and limit of kilometers, our app will find all the upcoming
+                    trains which will departure from a train station in the perimeter calculated thanks to the limit
+                    inputed.</p>
+            </div>
+
+            <div class="w3-third w3-center">
+                <i class="fa fa-stopwatch w3-padding-64 w3-text-black" style="font-size:128px;"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fourth Grid -->
+    <div class="w3-row-padding w3-light-grey w3-padding-64 w3-container">
+        <div class="w3-content">
+            <div class="w3-third w3-center">
+                <i class="fa fa-map w3-padding-64 w3-text-black w3-margin-right" style="font-size:128px;"></i>
+            </div>
+
+            <div class="w3-twothird">
+                <h1>Search itinerary</h1>
+                <h5 class="w3-padding-32">This tab gives the option to search for an itinerary through a departure
+                    station and an arrival station.</h5>
+
+                <p class="w3-text-grey">Auto-completion has been implemented in order to help the user identify the
+                    different train stations and make sure he chooses an existing one..</p>
+            </div>
+        </div>
+    </div>
+
+</body>
 {% endblock %}

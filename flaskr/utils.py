@@ -2,9 +2,7 @@ from math import sin, cos, sqrt, atan2, radians
 import geopy
 from .sparql_queries import get_all_coordinates
 import folium
-
 import numpy as np
-#from .sparql_queries import get_route_dep_arr
 
 # source: https://stackoverflow.com/questions/19412462/getting-distance-between-two-points-based-on-latitude-longitude
 def get_distance(point1, point2):
@@ -28,12 +26,14 @@ def get_bounds(points):
     bound_ne = (max(lats), max(longs))
     return (bound_sw, bound_ne)
 
+
 def find_point(address):
     geolocator = geopy.Nominatim(user_agent='ESILV_WebSemantic')
     location = geolocator.geocode(address)
     if location is None:
         return
     return (location.latitude, location.longitude)
+
 
 def construct_map(address, radius, datasets):
     point = find_point(address)
@@ -65,15 +65,8 @@ def construct_map(address, radius, datasets):
         folium.Marker(origin_point, popup="Default location", icon=folium.Icon(color='red', icon='glyphicon glyphicon-record')).add_to(map)
         return map, origin_point
 
+
 def interSection(arr1, arr2): # finding common elements
     # using filter method to find identical values via lambda function
     values = list(filter(lambda x: x in arr1, arr2))
     return values
-
-def float_to_str(coord):
-    res = str(coord)
-    missing = 10 - len(res)
-    while missing > 0:
-        res += '0'
-        missing -= 1
-    return res
