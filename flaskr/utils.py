@@ -2,7 +2,7 @@ from math import sin, cos, sqrt, atan2, radians
 import geopy
 from .sparql_queries import get_all_coordinates
 import folium
-import numpy as np
+
 
 # source: https://stackoverflow.com/questions/19412462/getting-distance-between-two-points-based-on-latitude-longitude
 def get_distance(point1, point2):
@@ -35,38 +35,70 @@ def find_point(address):
     return (location.latitude, location.longitude)
 
 
-def construct_map(address, radius, datasets):
+def construct_map(address, radius, datasets, options):
     point = find_point(address)
-    if point is not None:
-        coordinates = []
-        map = folium.Map(location=point)
-        if datasets:
-            for d in datasets:
-                coordinates.extend(get_all_coordinates(d))
-            coordinates = [c for c in coordinates if get_distance((c['lat'], c['long']), (point[0], point[1])) < radius]
-            if coordinates:
-                bounds = get_bounds([(c['lat'], c['long']) for c in coordinates])
-                map.fit_bounds(bounds)
-            for c in coordinates:
-                popuptext = '<i>\n'
-                for (key, val) in c.items():
-                    if key not in ('lat', 'long', 'id'):
-                        popuptext += f'{key}: {c[key].replace("_", " ")}\n'
-                popuptext += '</i>'
-                popuphtml = folium.Html(popuptext, script=True)
-                popup = folium.Popup(popuphtml, max_width=10000)
-                folium.Marker([c['lat'], c['long']], popup=popup, icon=folium.Icon(color='blue', icon='glyphicon glyphicon-pause')).add_to(map)
-        map.add_child(folium.LatLngPopup())
-        folium.Marker(point, popup="Your location", icon=folium.Icon(color='red', icon='glyphicon glyphicon-record')).add_to(map)
-        return map, point
-    else:
-        origin_point = (48.89608815877061, 2.235890140834457)
+    map = folium.Map(location=point)
+    if (not datasets) or (point is None):
+        origin_point = (48.89608815877061, 2.235890140834457)  # Default to ESILV
         map = folium.Map(location=origin_point, zoom_start=19)
-        folium.Marker(origin_point, popup="Default location", icon=folium.Icon(color='red', icon='glyphicon glyphicon-record')).add_to(map)
+        folium.Marker(origin_point,
+                      popup="Default location",
+                      icon=folium.Icon(color='red', icon='glyphicon glyphicon-record')
+                      ).add_to(map)
         return map, origin_point
+    coordinates = []
+    for d in datasets:
+        coordinates.extend(get_all_coordinates(d))
+    if options == 'all_stop':
+        coordinates = get_coordinates_cloth_to(coordinates, point, radius)
+    else:
+        coordinates, shortest_dist = get_clothest_stop(coordinates, point)
+        folium.PolyLine([(coordinates[0]['lat'], coordinates[0]['long']), point]
+                        ).add_child(folium.Popup(f'{shortest_dist}m:')).add_to(map)
+    all_coordinates = coordinates.copy()
+    all_coordinates.append({'lat': point[0], 'long': point[1]})
+    set_bound(map, all_coordinates)
+    populate_map(map, coordinates)
+    map.add_child(folium.LatLngPopup())
+    folium.Marker(point,
+                  popup="Your location",
+                  icon=folium.Icon(color='red', icon='glyphicon glyphicon-record')
+                  ).add_to(map)
+    return map, point
 
 
-def interSection(arr1, arr2): # finding common elements
-    # using filter method to find identical values via lambda function
+def populate_map(map, coordinates):
+    for c in coordinates:
+        popuptext = '<i>\n'
+        for (key, val) in c.items():
+            if key not in ('lat', 'long', 'id'):
+                popuptext += f'{key}: {c[key].replace("_", " ")}\n'
+        popuptext += '</i>'
+        popuphtml = folium.Html(popuptext, script=True)
+        popup = folium.Popup(popuphtml, max_width=10000)
+        folium.Marker([c['lat'], c['long']], popup=popup, icon=folium.Icon(color='blue', icon='glyphicon glyphicon-pause')).add_to(map)
+
+
+def set_bound(map, coordinates):
+    bounds = get_bounds([(c['lat'], c['long']) for c in coordinates])
+    map.fit_bounds(bounds)
+
+
+def get_coordinates_cloth_to(coordinates, point, radius):
+    return [c for c in coordinates if get_distance((c['lat'], c['long']), (point[0], point[1])) < radius]
+
+
+def get_clothest_stop(coordinates, point):
+    clothest_stop = coordinates[1]
+    shortest_dist = get_distance(point, (clothest_stop['lat'], clothest_stop['long']))
+    for c in coordinates[1:]:
+        distance = get_distance(point, (c['lat'], c['long']))
+        if distance < shortest_dist:
+            shortest_dist = distance
+            clothest_stop = c
+    return [clothest_stop], shortest_dist
+
+
+def interSection(arr1, arr2):
     values = list(filter(lambda x: x in arr1, arr2))
     return values
