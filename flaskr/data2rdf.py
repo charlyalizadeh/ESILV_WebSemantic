@@ -1,16 +1,12 @@
 import json
 from os.path import basename
-import geopy
 from rdflib import Graph, Literal, RDF, URIRef
-from rdflib.namespace import FOAF, XSD
+from rdflib.namespace import FOAF
 from rdflib import Namespace
-from rdflib.serializer import Serializer
 
 GEO = Namespace("http://www.w3.org/2003/01/geo/wgs84_pos#")
 SCHEMA = Namespace("https://schema.org/")
 PROJECT = Namespace('https://github.com/charlyalizadeh/ESILV_WebSemantic/')
-
-
 
 
 def json_to_jsonld_parking(parking_json):
@@ -85,8 +81,9 @@ def json_to_rdf_parking(filename, outfile=None, format='turtle'):
             graph.add((id, SCHEMA.branchCode, Literal(properties.get('FID', ''))))
             graph.add((id, SCHEMA.address, Literal(properties.get('ADRESSE_', ''))))
             graph.add((id, SCHEMA.addressCountry, Literal('France')))
-            graph.add((id, GEO.lat, Literal(geometry['coordinates'][0])))
-            graph.add((id, GEO.long, Literal(geometry['coordinates'][1])))
+            print(geometry['coordinates'])
+            graph.add((id, GEO.lat, Literal(geometry['coordinates'][1])))
+            graph.add((id, GEO.long, Literal(geometry['coordinates'][0])))
             graph.add((id, SCHEMA.hasMap, Literal(properties.get('STREET_VIE', ''))))
             graph.add((id, SCHEMA.isAccessibleForFree, Literal(True) if properties.get('GRATUIT_PA', '') == 'Gratuit' else Literal(False)))
             graph.add((id, SCHEMA.maximumAttendeeCapacity, Literal(properties.get('NB_PLACE', -1))))
@@ -99,6 +96,3 @@ def json_to_rdf_parking(filename, outfile=None, format='turtle'):
             graph.add((id, PROJECT.nbPmr, Literal(properties.get('NB_PMR', ''))))
             graph.add((id, PROJECT.parkSuscribeType, Literal(properties.get('TYPE', ''))))
     graph.serialize(destination=outfile, format=format)
-
-
-json_to_rdf_parking('../PARKINGS.geojson')

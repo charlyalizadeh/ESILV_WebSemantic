@@ -13,7 +13,8 @@ class SearchMapForm(FlaskForm):
                                    description='Datasets',
                                    choices=[
                                         ('gtfs_sncf', 'gtfs_sncf'),
-                                        ('gtfs_saintetiennebustram', 'gtfs_saintetiennebustram')
+                                        ('gtfs_saintetiennebustram', 'gtfs_saintetiennebustram'),
+                                        ('parking_argenteuil', 'parking_argenteuil')
                                     ])
     options = SelectField('Options',
                           description='Options',

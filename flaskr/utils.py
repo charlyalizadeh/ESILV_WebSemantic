@@ -48,7 +48,7 @@ def construct_map(address, radius, datasets, options):
         return map, origin_point
     coordinates = []
     for d in datasets:
-        coordinates.extend(get_all_coordinates(d))
+        coordinates.extend(get_all_coordinates(d, rdf_class=None))
     if options == 'all_stop':
         coordinates = get_coordinates_cloth_to(coordinates, point, radius)
     else:
@@ -73,10 +73,13 @@ def populate_map(map, coordinates):
         for (key, val) in c.items():
             if key not in ('lat', 'long', 'id'):
                 popuptext += f'{key}: {c[key].replace("_", " ")}\n'
+        icon = folium.Icon(color='blue')
+        if c['class'] == 'https://schema.org/Place':
+            icon = folium.Icon(color='red')
         popuptext += '</i>'
         popuphtml = folium.Html(popuptext, script=True)
         popup = folium.Popup(popuphtml, max_width=10000)
-        folium.Marker([c['lat'], c['long']], popup=popup, icon=folium.Icon(color='blue', icon='glyphicon glyphicon-pause')).add_to(map)
+        folium.Marker([c['lat'], c['long']], popup=popup, icon=icon).add_to(map)
 
 
 def set_bound(map, coordinates):

@@ -45,15 +45,17 @@ def get_all_coordinates(dataset,
                         rdf_class='gtfs:Stop',
                         predicates={'foaf:name': '?name'},
                         optionals={'dct:description': '?description'},
-                        groupby=['?name', '?lat', '?long'],
+                        groupby=['?name', '?lat', '?long', '?class'],
                         types={'lat': float, 'long': float}):
-    query = f"""
+    query = """
     SELECT DISTINCT *
-    WHERE {{
-        ?id a {rdf_class} .
+    WHERE {
         ?id geo:long ?long .
         ?id geo:lat ?lat .
+        ?id a ?class .
     """
+    if rdf_class is not None:
+        query += f'?id a {rdf_class} .\n'
     for (pred, subj) in predicates.items():
         query += f'?id {pred} {subj} .\n'
     for (pred, subj) in optionals.items():
