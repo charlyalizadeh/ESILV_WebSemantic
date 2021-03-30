@@ -7,10 +7,13 @@ import argparse
 import zipfile
 
 
-def connect_docker():
-    base_url = 'tcp://127.0.0.1:1234' if platform.system() == 'Windows' else 'unix://var/run/docker.sock'
+def connect_docker(high_level=False):
     print('Connect to docker...')
-    cli = docker.APIClient(base_url=base_url)
+    if not high_level:
+        base_url = 'tcp://127.0.0.1:2734' if platform.system() == 'Windows' else 'unix://var/run/docker.sock'
+        cli = docker.APIClient(base_url=base_url)
+    else:
+        cli = docker.from_env()
     print('  Done!')
     return cli
 
@@ -45,9 +48,11 @@ def create_dataset(name):
     requests.post('http://localhost:3030/$/datasets', data=data, auth=('admin', 'pw'))
 
 
-def import_dataset_ttl(dataset, filename):
-    # !! The use of shell=True is not a good idea. !!
-    subprocess.run(f'./s-put http://localhost:3030/{dataset} default {filename}', shell=True)
+def import_dataset_ttl(cli, dataset, filename):
+    if cli is None:
+        cli = connect_docker(True)
+    fuseki_container = cli.containers.get('fuseki')
+    fuseki_container.exec_run(f'./bin/s-put http://localhost:3030/{dataset} default {filename}')
 
 
 def pull_images(cli=None):
@@ -72,9 +77,20 @@ def create_containers(cli=None):
     cli.start('fuseki')
     time.sleep(10)  # Ahah
     print('  Done!')
-    print('Install `procps` inside fuseki container...')
-    cli.exec_create('fuseki', 'apt-get update')
-    cli.exec_create('fuseki', 'apt-get install -y --no-install-recommends procps')
+    print('Setup fuseki container... (This may take some time)')
+    cli = connect_docker(True)
+    fuseki_container = cli.containers.get('fuseki')
+    print('  > Run `apt-get update`...')
+    fuseki_container.exec_run('apt-get update')
+    print('  Done!')
+    print('  > Install `procps` inside fuseki container...')
+    fuseki_container.exec_run('apt-get install -y --no-install-recommends procps')
+    print('  Done!')
+    print('  > Install `ruby` inside fuseki container...')
+    fuseki_container.exec_run('apt-get -y install ruby')
+    print('  Done!')
+    print('  > Run `chmod +x /jena-fuseki/bin/s-put`...')
+    fuseki_container.exec_run('chmod +x /jena-fuseki/bin/s-put')
     print('  Done!')
 
 
@@ -95,14 +111,21 @@ def import_data():
     with zipfile.ZipFile('./data.zip', 'r') as zip_ref:
         zip_ref.extractall('./')
     print('  Done!')
+    print('Copy data in container...')
+    # !! The use of shell=True is not a good idea. !!
+    subprocess.run('docker cp ./data/gtfs_sncf.ttl fuseki:/jena-fuseki/', shell=True)
+    subprocess.run('docker cp ./data/gtfs_saintetiennebustram.ttl fuseki:/jena-fuseki/', shell=True)
+    subprocess.run('docker cp ./data/parking_argenteuil.ttl fuseki:/jena-fuseki/', shell=True)
+    print('  Done!')
+    cli = connect_docker(True)
     print('Import `gtfs_sncf` data...')
-    import_dataset_ttl('gtfs_sncf', './data/gtfs_sncf.ttl')
+    import_dataset_ttl(cli, 'gtfs_sncf', 'gtfs_sncf.ttl')
     print('  Done!')
     print('Import `gtfs_saintetiennebustram` data...')
-    import_dataset_ttl('gtfs_saintetiennebustram', './data/gtfs_saintetiennebustram.ttl')
+    import_dataset_ttl(cli, 'gtfs_saintetiennebustram', 'gtfs_saintetiennebustram.ttl')
     print('  Done!')
     print('Import `parking_argenteuil` data...')
-    import_dataset_ttl('parking_argenteuil', './data/parking_argenteuil.ttl')
+    import_dataset_ttl(cli, 'parking_argenteuil', 'parking_argenteuil.ttl')
     print('  Done!')
 
 
