@@ -10,7 +10,7 @@ import zipfile
 def connect_docker(high_level=False):
     print('Connect to docker...')
     if not high_level:
-        base_url = 'tcp://127.0.0.1:2734' if platform.system() == 'Windows' else 'unix://var/run/docker.sock'
+        base_url = 'tcp://127.0.0.1:2375' if platform.system() == 'Windows' else 'unix://var/run/docker.sock'
         cli = docker.APIClient(base_url=base_url)
     else:
         cli = docker.from_env()
