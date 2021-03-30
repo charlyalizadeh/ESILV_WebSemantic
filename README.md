@@ -24,11 +24,13 @@ $ pip install -r requirements.txt
 Note that you need to have a activated virtual environment with the packages in `requirements.txt` installed.
 Note also that this script setups fuseki with docker.
 ```bash
+$ python setup_fuseki.py --help # More configuration
 $ python setup_fuseki.py
 ```
 
-You can also setup fuseki manually thanks to the following instructions:
 
+
+On Windows you'll need to allow TCP connections on port 2734 for the script to work.
 
 ###  Manually
 
@@ -50,6 +52,8 @@ $ docker run -d --name fuseki -p 3030:3030 --volumes-from fuseki-data -e ADMIN_P
 $ docker exec -it fuseki bash
 /jena-fuseki$ apt-get upgrade
 /jena-fuseki$ apt-get install -y --no-install-recommends procps
+/jena-fuseki$ apt-get install ruby
+/jena-fuseki$ chmod +x jena-fuseki/bin/s-put
 ```
 Now go on [http://localhost:3030](http://localhost:3030) and you should be able to access the fuseki web interface (user: *admin*, password: *pw*)
 
@@ -59,9 +63,9 @@ Now go on [http://localhost:3030](http://localhost:3030) and you should be able 
 ```bash
 $ unzip data.zip
 ```
-2. Create the `gtfs_sncf` and `gtfs_saintetiennebustram` datasets
+2. Create the `gtfs_sncf`, `gtfs_saintetiennebustram`, and `parking_argenteuil` datasets
 ![add dataset](doc/adddataset.png)
-3. Upload `data.ttl` to the database (it can take a while):
+3. Upload `gtfs_sncf.ttl`, `gtfs_saintetiennebustram.ttl` and `parking_argenteuil.ttl` to the database (it can take a while):
 ![upload dataset](doc/uploaddata.png)
 
 The fuseki triplestore is now configured to work with the flask application
