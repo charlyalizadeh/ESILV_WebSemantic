@@ -3,14 +3,21 @@ import docker
 import requests
 import subprocess
 import time
+import argparse
+import zipfile
 
 
-def pull_images(cli):
-    cli.pull('stain/jena-fuseki')
-    cli.pull('busybox')
+def connect_docker():
+    base_url = 'tcp://127.0.0.1:1234' if platform.system() == 'Windows' else 'unix://var/run/docker.sock'
+    print('Connect to docker...')
+    cli = docker.APIClient(base_url=base_url)
+    print('  Done!')
+    return cli
 
 
-def create_fuseki_container(cli, volume_name):
+def create_fuseki_container(cli=None, volume_name='fuseki-data'):
+    if cli is None:
+        cli = connect_docker()
     host_config = cli.create_host_config(
             port_bindings={3030: 3030},
             volumes_from=[volume_name])
@@ -22,7 +29,9 @@ def create_fuseki_container(cli, volume_name):
                          name='fuseki')
 
 
-def create_fuseki_data_volume(cli):
+def create_fuseki_data_volume(cli=None):
+    if cli is None:
+        cli = connect_docker()
     cli.create_container('busybox', volumes=['/fuseki'], name='fuseki-data')
 
 
@@ -41,14 +50,18 @@ def import_dataset_ttl(dataset, filename):
     subprocess.run(f'./s-put http://localhost:3030/{dataset} default {filename}', shell=True)
 
 
-def setup_fuseki():
-    base_url = 'tcp://127.0.0.1:1234' if platform.system() == 'Windows' else 'unix://var/run/docker.sock'
-    print('Connect to docker...')
-    cli = docker.APIClient(base_url=base_url)
-    print('  Done!')
+def pull_images(cli=None):
+    if cli is None:
+        cli = connect_docker()
     print('Pulling the images')
-    pull_images(cli)
+    cli.pull('stain/jena-fuseki')
+    cli.pull('busybox')
     print('  Done!')
+
+
+def create_containers(cli=None):
+    if cli is None:
+        cli = connect_docker()
     print('Create `fuseki-data` volume...')
     create_fuseki_data_volume(cli)
     print('  Done!')
@@ -63,6 +76,9 @@ def setup_fuseki():
     cli.exec_create('fuseki', 'apt-get update')
     cli.exec_create('fuseki', 'apt-get install -y --no-install-recommends procps')
     print('  Done!')
+
+
+def create_datasets():
     print('Create `gtfs_sncf` dataset...')
     create_dataset('gtfs_sncf')
     print('  Done!')
@@ -71,6 +87,13 @@ def setup_fuseki():
     print('  Done!')
     print('Create `parking_argenteuil` dataset...')
     create_dataset('parking_argenteuil')
+    print('  Done!')
+
+
+def import_data():
+    print('Unzip the data...')
+    with zipfile.ZipFile('./data.zip', 'r') as zip_ref:
+        zip_ref.extractall('./')
     print('  Done!')
     print('Import `gtfs_sncf` data...')
     import_dataset_ttl('gtfs_sncf', './data/gtfs_sncf.ttl')
@@ -83,4 +106,39 @@ def setup_fuseki():
     print('  Done!')
 
 
-setup_fuseki()
+def setup_fuseki():
+    cli = connect_docker()
+    pull_images(cli)
+    create_containers(cli)
+    create_datasets()
+    import_data()
+
+
+parser = argparse.ArgumentParser(description='Script to setup the fuseki database with docker. Pass no options to build all.')
+parser.add_argument('-p', '--pull', action='store_true', default=False,
+                    help='Pull the docker images (`stain/jean-fuseki` and `busybox`)')
+parser.add_argument('-c', '--container', action='store_true', default=False,
+                    help='Create the containers/volumes (`fuseki-data` and `fuseki`)')
+parser.add_argument('-d', '--dataset', action='store_true', default=False,
+                    help='Create the datasets (`gtfs_sncf`, `gtfs_saintetiennebustram`, and `parking_argenteuil`)')
+parser.add_argument('-i', '--import-data', action='store_true', default=False,
+                    help='Import the data in the datasets')
+args = parser.parse_args()
+options = {
+    'pull': args.pull,
+    'container': args.container,
+    'dataset': args.dataset,
+    'import_data': args.import_data
+}
+if (not any(options.values())) or all(options.values()):
+    setup_fuseki()
+else:
+    if options['pull']:
+        pull_images()
+    if options['container']:
+        create_containers()
+    if options['dataset']:
+        create_datasets()
+    if options['import_data']:
+        import_data()
+
