@@ -20,12 +20,13 @@ def get_prefixes():
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-    PREFIX schema: <http://schema.org/>
+    PREFIX schema: <https://schema.org/>
     PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
     PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
     PREFIX time: <http://www.w3.org/2006/time#>
     PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    PREFIX project: <https://github.com/charlyalizadeh/ESILV_WebSemantic/>
     """)
 
 
@@ -48,12 +49,13 @@ def get_all_coordinates(dataset,
                         groupby=['?name', '?lat', '?long', '?class'],
                         types={'lat': float, 'long': float}):
     query = """
-    SELECT DISTINCT *
+    SELECT *
     WHERE {
         ?id geo:long ?long .
         ?id geo:lat ?lat .
         ?id a ?class .
     """
+    print('PREDICATES:', predicates)
     if rdf_class is not None:
         query += f'?id a {rdf_class} .\n'
     for (pred, subj) in predicates.items():
@@ -67,6 +69,7 @@ def get_all_coordinates(dataset,
     query_results = query_fuseki(query, dataset)['results']['bindings']
     results = []
     for row in query_results:
+        print(row)
         dict_row = {}
         for (key, val) in row.items():
             val = val['value']

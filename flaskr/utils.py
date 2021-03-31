@@ -48,7 +48,21 @@ def construct_map(address, radius, datasets, options):
         return map, origin_point
     coordinates = []
     for d in datasets:
-        coordinates.extend(get_all_coordinates(d, rdf_class=None))
+        if d == 'parking_argenteuil':
+            coordinates.extend(get_all_coordinates(d,
+                                                   rdf_class='schema:Place',
+                                                   predicates={
+                                                       'foaf:name': '?name',
+                                                       'schema:address': '?address',
+                                                       'schema:isAccessibleForFree': '?free',
+                                                       'schema:maximumAttendeeCapacity': '?nbPlaces',
+                                                       'schema:tourBookingPage': '?website',
+                                                       'project:freeDuration': '?freeFor'
+                                                   },
+                                                   groupby=[],
+                                                   ))
+        else:
+            coordinates.extend(get_all_coordinates(d, rdf_class=None))
     if options == 'all_stop':
         coordinates = get_coordinates_cloth_to(coordinates, point, radius)
     else:
@@ -71,11 +85,11 @@ def populate_map(map, coordinates):
     for c in coordinates:
         popuptext = '<i>\n'
         for (key, val) in c.items():
-            if key not in ('lat', 'long', 'id'):
-                popuptext += f'{key}: {c[key].replace("_", " ")}\n'
+            if key not in ('lat', 'long', 'id', 'class') and not val.isspace():
+                popuptext += f'{key}: {c[key].replace("_", " ")}<br>'
         icon = folium.Icon(color='blue')
         if c['class'] == 'https://schema.org/Place':
-            icon = folium.Icon(color='red')
+            icon = folium.Icon(color='green')
         popuptext += '</i>'
         popuphtml = folium.Html(popuptext, script=True)
         popup = folium.Popup(popuphtml, max_width=10000)
