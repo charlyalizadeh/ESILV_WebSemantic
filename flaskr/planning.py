@@ -53,7 +53,7 @@ def result():
                                 'dTime': trip['dTime'],
                                 'aTime': trip['aTime']}
                     tp.append(tmp_dict)
-            return render_template('itinerary/result.html',
+            return render_template('planning/result.html',
                                    map=map._repr_html_(),
                                    origin=dStation,
                                    destination=aStation,
@@ -76,19 +76,21 @@ def result():
                                     'dTime': t['dTime'],
                                     'aTime': t['aTime']}
                         tp.append(tmp_dict)
-                return render_template('itinerary/substitute.html',
+                return render_template('planning/substitute.html',
                                        map=map._repr_html_(),
                                        origin=dStation,
                                        destination=aStation,
                                        trips=tp)
             except:
-                return render_template('itinerary/no-result.html')
+                return render_template('planning/no-result.html')
 
 
 @bp.route('/search', methods=['POST'])
 def search():
     term = request.form['q']
-    stations = get_all_coordinates('gtfs_sncf', 'gtfs:Station')
+    stations = get_all_coordinates('gtfs_sncf',
+                                   'gtfs:Station')
+    print(stations)
     stations = [s['name'].replace('_', ' ') for s in stations]
     filtered_dict = [v for v in stations if term in v]
     resp = jsonify(filtered_dict)
