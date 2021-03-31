@@ -30,7 +30,7 @@ $ python setup_fuseki.py
 
 
 
-On Windows you'll need to allow TCP connections on port 2734 for the script to work.
+On Windows you'll need to allow TCP connections on port 2735 for the script to work.
 
 ###  Manually
 
