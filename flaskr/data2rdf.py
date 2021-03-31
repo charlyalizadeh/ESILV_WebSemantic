@@ -9,57 +9,6 @@ SCHEMA = Namespace("https://schema.org/")
 PROJECT = Namespace('https://github.com/charlyalizadeh/ESILV_WebSemantic/')
 
 
-def json_to_jsonld_parking(parking_json):
-    properties = parking_json['properties']
-    geometry = parking_json['geometry']
-    return {
-        '@context': 'https://schema.org/Place',
-        '@id': f'https://github.com/charlyalizadeh/ESILV_WebSemantic/parking/{parking_json["properties"]["FID"]}',
-        "branchCode": properties.get('FID', ''),
-        "_OriginalId": properties.get('ID', ''),
-        "geo": {
-            "address": properties.get('ADRESSE_', ''),
-            "addressCountry": "France",
-            "latitude": geometry['coordinates'][0],
-            "longitude": geometry['coordinates'][1]
-        },
-        "isAccessibleForFree": True if properties.get('GRATUIT_PA', '') == "Gratuit" else False,
-        "maximumAttendeeCapacity": properties.get('NB_PLACE', ''),
-        "tourBookingPage": properties.get('HTTP', ''),
-        "name": properties.get('NOM', ''),
-        "disambiguatingDescription": "A place to park cars",
-        "suscriberOnly": True if properties.get('TYPE', '') == "Abonnés" else False,
-        "parkingType": properties.get('TYPE_PARC', ''),
-        "reglement": properties.get('REGLEMENT', '') == "Oui",
-        "freeParkDuration": properties.get('GRATUITE', ''),
-        "streetView": properties.get('STREET_VIE', ''),
-        "owner": properties.get('EXPLOITANT', ''),
-        "nbPmr": properties.get('NB_PMR', '')
-    }
-
-
-def json_to_jsonld_parking_file(filename, outfile=None):
-    if outfile is None:
-        outfile = f'{basename(filename).split(".")[0]}_ld.json'
-    with (open(filename, 'r') as json_file,
-          open(outfile, 'w') as jsonld_file):
-        parkings = json.load(json_file)['features']
-        for p in parkings:
-            jsonld_data = json_to_jsonld_parking(p)
-            json.dump(jsonld_data, jsonld_file)
-            jsonld_file.write('\n')
-
-
-def jsonld_to_rdf_parking(filename, outfile=None):
-    if outfile is None:
-        outfile = f'{basename(filename).split(".")[0]}.txt'
-    g = Graph()
-    with open(filename, 'r') as jsonld_file:
-        for line in jsonld_file.readlines():
-            context = json.loads(line)
-            gg
-
-
 def json_to_rdf_parking(filename, outfile=None, format='turtle'):
     placeURI = URIRef('https://schema.org/Place')
     parkingID_URI = 'https://github.com/charlyalizadeh/ESILV_WebSemantic/parking'
