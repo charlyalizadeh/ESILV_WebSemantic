@@ -102,5 +102,5 @@ You should be able to access our app on [http://localhost:5000/](http://localhos
 
 # Credits
 
-This project relies highly on [linked-gtfs](https://github.com/OpenTransport/linked-gtfs) and [gtfs-csv2rdf](https://github.com/OpenTransport/gtfs-csv2rdf) by [Pieter Colpaert](https://github.com/pietercolpaert).
+This project relies highly on [linked-gtfs](https://github.com/OpenTransport/linked-gtfs) and [gtfs-csv2rdf](https://github.com/OpenTransport/gtfs-csv2rdf) by [Pieter Colpaert](https://github.com/pietercolpaert).  
 Also this project has been done in collaboration with [julietteBrt](https://github.com/julietteBrt) and [JackyKch](https://github.com/JackyKch)
