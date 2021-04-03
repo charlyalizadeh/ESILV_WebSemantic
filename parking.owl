@@ -1,0 +1,195 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/charly/ontologies/2021/2/untitled-ontology-12#"
+     xml:base="http://www.semanticweb.org/charly/ontologies/2021/2/untitled-ontology-12"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/charly/ontologies/2021/2/untitled-ontology-12"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.w3.org/2003/01/geo/wgs84_pos#lat -->
+
+    <owl:DatatypeProperty rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#lat">
+        <rdfs:domain rdf:resource="https://schema.org/Place"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.w3.org/2003/01/geo/wgs84_pos#long -->
+
+    <owl:DatatypeProperty rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#long">
+        <rdfs:domain rdf:resource="https://schema.org/Place"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://xmlns.com/foaf/0.1/name -->
+
+    <owl:DatatypeProperty rdf:about="http://xmlns.com/foaf/0.1/name">
+        <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://github.com/charlyalizadeh/ESILV_WebSemantic/creditCard -->
+
+    <owl:DatatypeProperty rdf:about="https://github.com/charlyalizadeh/ESILV_WebSemantic/creditCard">
+        <rdfs:domain rdf:resource="https://schema.org/Parking"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://github.com/charlyalizadeh/ESILV_WebSemantic/freeDuration -->
+
+    <owl:DatatypeProperty rdf:about="https://github.com/charlyalizadeh/ESILV_WebSemantic/freeDuration">
+        <rdfs:domain rdf:resource="https://schema.org/Parking"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://github.com/charlyalizadeh/ESILV_WebSemantic/nbPmr -->
+
+    <owl:DatatypeProperty rdf:about="https://github.com/charlyalizadeh/ESILV_WebSemantic/nbPmr">
+        <rdfs:domain rdf:resource="https://schema.org/Parking"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://github.com/charlyalizadeh/ESILV_WebSemantic/owner -->
+
+    <owl:DatatypeProperty rdf:about="https://github.com/charlyalizadeh/ESILV_WebSemantic/owner">
+        <rdfs:domain rdf:resource="https://schema.org/Parking"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://github.com/charlyalizadeh/ESILV_WebSemantic/parkSuscribeType -->
+
+    <owl:DatatypeProperty rdf:about="https://github.com/charlyalizadeh/ESILV_WebSemantic/parkSuscribeType">
+        <rdfs:domain rdf:resource="https://schema.org/Parking"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://github.com/charlyalizadeh/ESILV_WebSemantic/parkType -->
+
+    <owl:DatatypeProperty rdf:about="https://github.com/charlyalizadeh/ESILV_WebSemantic/parkType">
+        <rdfs:domain rdf:resource="https://schema.org/Parking"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://schema.org/address -->
+
+    <owl:DatatypeProperty rdf:about="https://schema.org/address">
+        <rdfs:domain rdf:resource="https://schema.org/Place"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://schema.org/addressCountry -->
+
+    <owl:DatatypeProperty rdf:about="https://schema.org/addressCountry">
+        <rdfs:domain rdf:resource="https://schema.org/Place"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://schema.org/branchCode -->
+
+    <owl:DatatypeProperty rdf:about="https://schema.org/branchCode">
+        <rdfs:domain rdf:resource="https://schema.org/Place"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://schema.org/hasMap -->
+
+    <owl:DatatypeProperty rdf:about="https://schema.org/hasMap">
+        <rdfs:domain rdf:resource="https://schema.org/Place"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://schema.org/isAccessibleForFree -->
+
+    <owl:DatatypeProperty rdf:about="https://schema.org/isAccessibleForFree">
+        <rdfs:domain rdf:resource="https://schema.org/Place"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://schema.org/maximumAttendeeCapacity -->
+
+    <owl:DatatypeProperty rdf:about="https://schema.org/maximumAttendeeCapacity">
+        <rdfs:domain rdf:resource="https://schema.org/Place"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://schema.org/tourBookingPage -->
+
+    <owl:DatatypeProperty rdf:about="https://schema.org/tourBookingPage">
+        <rdfs:domain rdf:resource="https://schema.org/Place"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- https://schema.org/Parking -->
+
+    <owl:Class rdf:about="https://schema.org/Parking">
+        <rdfs:subClassOf rdf:resource="https://schema.org/Place"/>
+    </owl:Class>
+    
+
+
+    <!-- https://schema.org/Place -->
+
+    <owl:Class rdf:about="https://schema.org/Place"/>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi -->
+
