@@ -64,9 +64,9 @@ def construct_map(address, radius, datasets, options):
         else:
             coordinates.extend(get_all_coordinates(d, rdf_class=None))
     if options == 'all_stop':
-        coordinates = get_coordinates_cloth_to(coordinates, point, radius)
+        coordinates = get_coordinates_close_to(coordinates, point, radius)
     else:
-        coordinates, shortest_dist = get_clothest_stop(coordinates, point)
+        coordinates, shortest_dist = get_closest_stop(coordinates, point)
         folium.PolyLine([(coordinates[0]['lat'], coordinates[0]['long']), point]
                         ).add_child(folium.Popup(f'{shortest_dist}m:')).add_to(map)
     all_coordinates = coordinates.copy()
@@ -101,19 +101,19 @@ def set_bound(map, coordinates):
     map.fit_bounds(bounds)
 
 
-def get_coordinates_cloth_to(coordinates, point, radius):
+def get_coordinates_close_to(coordinates, point, radius):
     return [c for c in coordinates if get_distance((c['lat'], c['long']), (point[0], point[1])) < radius]
 
 
-def get_clothest_stop(coordinates, point):
-    clothest_stop = coordinates[1]
-    shortest_dist = get_distance(point, (clothest_stop['lat'], clothest_stop['long']))
+def get_closest_stop(coordinates, point):
+    closest_stop = coordinates[1]
+    shortest_dist = get_distance(point, (closest_stop['lat'], closest_stop['long']))
     for c in coordinates[1:]:
         distance = get_distance(point, (c['lat'], c['long']))
         if distance < shortest_dist:
             shortest_dist = distance
-            clothest_stop = c
-    return [clothest_stop], shortest_dist
+            closest_stop = c
+    return [closest_stop], shortest_dist
 
 
 def interSection(arr1, arr2):

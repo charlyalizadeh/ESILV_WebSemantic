@@ -136,7 +136,7 @@ def get_route_dep_arr(dep_lat, dep_long, arr_lat, arr_long):
     ?stop1 geo:long "%s" .
     } GROUP BY ?route ?routeLongName ?stopTime  ?aTime ?dTime ?stopTime1  ?aTime1 ?dTime1
     ORDER BY ?dTime
-    """ % (format(dep_lat, '.10f'), float_to_str(dep_long), float_to_str(arr_lat), float_to_str(arr_long)))
+    """ % (float_to_str(dep_lat), float_to_str(dep_long), float_to_str(arr_lat), float_to_str(arr_long)))
     query_results = query_fuseki(query, 'gtfs_sncf')['results']['bindings']
     print(query_results)
     results = []

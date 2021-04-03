@@ -19,7 +19,7 @@ class SearchMapForm(FlaskForm):
     options = SelectField('Options',
                           description='Options',
                           choices=[
-                              ('clothest_stop', 'Clothest stop'),
+                              ('closest_stop', 'Closest stop'),
                               ('all_stop', 'All stop'),
                           ])
     submit = SubmitField("Search")
