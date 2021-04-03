@@ -7,7 +7,7 @@ from flask_wtf import FlaskForm
 
 
 class SearchMapForm(FlaskForm):
-    address = StringField('Address', description='Adress', render_kw={'placeholder': 'Adress'})
+    address = StringField('Address', description='Address', render_kw={'placeholder': 'Address'})
     radius = IntegerField('Radius', description='Radius', render_kw={'placeholder': 'Radius'})
     datasets = SelectMultipleField('Datasets',
                                    description='Datasets',
